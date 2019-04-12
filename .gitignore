@@ -112,3 +112,32 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+/.settings/  
+/target/  
+  
+# built application files  
+*.apk  
+*.ap_  
+  
+# files for the dex VM  
+*.dex  
+  
+# Java class files  
+*.class  
+  
+# generated files  
+bin/  
+gen/  
+  
+# Eclipse project files  
+.classpath  
+.project  
+.DS_Store  
+.idea
+*.iml
+out
+
+.DS_Store
+.DS_Store
+*.jpg
