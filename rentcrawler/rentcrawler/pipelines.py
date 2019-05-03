@@ -1,11 +1,19 @@
-# -*- coding: utf-8 -*-
-
-# Define your item pipelines here
-#
-# Don't forget to add your pipeline to the ITEM_PIPELINES setting
-# See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
+import csv
 
 
-class RentcrawlerPipeline(object):
+class CsvPipeline(object):
+
     def process_item(self, item, spider):
+
+        with open('rent.csv', 'a+', encoding='utf-8') as f:
+            csv_writer = csv.writer(f, delimiter=',')
+            csv_writer.writerow([item['house_title'], item['house_location'], item['house_area'],
+                                 item['house_size'], item['house_orientation'], item['house_type'],
+                                 item['house_time'], item['house_price'], item['house_image'],
+                                 item['house_url']])
+
         return item
+
+
+
+
