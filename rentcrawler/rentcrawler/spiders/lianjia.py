@@ -8,7 +8,13 @@ from urllib import parse
 class LianjiaSpider(scrapy.Spider):
 
     name = 'lianjia'
-    start_urls = ['https://bj.lianjia.com/zufang/']
+    start_urls = ['https://bj.lianjia.com/zufang/',
+                  'https://sh.lianjia.com/zufang/',
+                  'https://gz.lianjia.com/zufang/',
+                  'https://sz.lianjia.com/zufang/',
+                  'https://cd.lianjia.com/zufang/'
+                  ]
+    # 北京19856 + 上海24265 + 广州44235 + 深圳28373 + 成都83762 = 200491
 
     def start_requests(self):
         for url in self.start_urls:

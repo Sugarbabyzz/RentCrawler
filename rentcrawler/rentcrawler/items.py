@@ -5,6 +5,7 @@ class LianjiaItem(Item):
 
     # define the fields for your item here.
 
+    house_city = Field()            # 所属城市
     house_title = Field()           # 房源信息标题
     house_location = Field()        # 城市城区
     house_area = Field()            # 所属区域

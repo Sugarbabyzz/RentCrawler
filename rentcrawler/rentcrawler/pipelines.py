@@ -16,23 +16,6 @@ class CsvPipeline(object):
         return item
 
 
-class DuplicatesPipeline(object):
-    """
-    去除重复房源
-    """
-
-    def __init__(self):
-        self.house_set = set()
-
-    def process_item(self, item, spider):
-        title = item['title']
-        if title in self.house_set:
-            raise DropItem('Duplicate house found:%s' % item)
-
-        self.house_set.add(title)
-        return item
-
-
 
 
 
