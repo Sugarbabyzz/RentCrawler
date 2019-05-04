@@ -20,6 +20,9 @@ class LianjiaSpider(scrapy.Spider):
         for url in self.start_urls:
             yield Request(url=url, callback=self.location_parse)
 
+    """
+    选择城区
+    """
     def location_parse(self, response):
 
         html = response.xpath('//div[@id="filter"]/ul[2]/li[not(@data-id="0")]')
@@ -28,6 +31,9 @@ class LianjiaSpider(scrapy.Spider):
             url = parse.urljoin(response.url, li.xpath('a/@href').extract_first())
             yield Request(url=url, callback=self.area_parse)
 
+    """
+    选择街区
+    """
     def area_parse(self, response):
 
         html = response.xpath('//div[@id="filter"]/ul[4]/li[not(@data-id="0")]')
@@ -36,40 +42,48 @@ class LianjiaSpider(scrapy.Spider):
             url = parse.urljoin(response.url, li.xpath('a/@href').extract_first())
             yield Request(url=url, callback=self.page_parse)
 
+    """
+    选择页码
+    """
     def page_parse(self, response):
 
         total_page = response.xpath('//div[@class="content__pg"]/@data-totalpage').extract_first()
 
         for i in range(1, int(total_page) + 1):
+        # for i in range(1, 3):
             url = str(response.url) + 'pg{}'.format(str(i))
             yield Request(url=url, callback=self.house_parse)
 
+    """
+    选择房源
+    """
     def house_parse(self, response):
-        item = LianjiaItem()
-        item['house_city'] = response.xpath('//p[@class="bread__nav__wrapper oneline"]/a/text()').re_first('链家网(.*)站')
 
         html = response.xpath('//div[@class="content__list"]/div')
 
-        for i in html:
+        for div in html:
+            url = parse.urljoin(response.url, div.xpath('a/@href').extract_first())
+            yield Request(url=url, callback=self.house_detail_parse)
 
-            item['house_title'] = (i.xpath('div//p[contains(@class, "title")]/a/text()').extract_first()).replace(' ', '').replace('\n', '').replace('，', ' ').replace('。', '')
-            item['house_location'] = i.xpath('div//p[contains(@class, "des")]/a[1]/text()').extract_first()
-            item['house_area'] = i.xpath('div//p[contains(@class, "des")]/a[2]/text()').extract_first()
-            item['house_orientation'] = i.xpath('div//p[contains(@class, "des")]/text()[5]').extract_first().replace(' ', '').replace('\n', '')
-            item['house_size'] = i.xpath('div//p[contains(@class, "des")]/text()[4]').extract_first().replace(' ', '').replace('\n', '')
-            item['house_type'] = i.xpath('div//p[contains(@class, "des")]/text()[6]').extract_first().replace(' ', '').replace('\n', '')
-            item['house_time'] = i.xpath('div//p[contains(@class, "time")]/text()').extract_first()
-            item['house_price'] = (i.xpath('div//span[contains(@class, "price")]/em/text()').extract_first()
-                                  + i.xpath('div//span[contains(@class, "price")]/text()').extract_first()).replace(' ', '')
-            item['house_image'] = i.xpath('a//img/@data-src').extract_first()
-            item['house_url'] = parse.urljoin(response.url, i.xpath('div//p[contains(@class, "title")]/a/@href').extract_first())
+    """
+    抓取房源细节信息
+    """
+    def house_detail_parse(self, response):
+        item = LianjiaItem()
 
-            yield item
+        item['house_city'] = response.xpath('//p[@class="bread__nav__wrapper oneline"]/a/text()').re_first('(.*)租房网')
+        item['house_title'] = (response.xpath('//p[contains(@class, "title")]/text()').extract_first()).replace(' ', '').replace('\n', '').replace('，', ' ').replace('。', '')
+        item['house_location'] = response.xpath('/html/body/div[3]/script/text()').re_first('g_conf.name = \'(.*)\'')
+        item['house_orient'] = response.xpath('//div[@id="aside"]/ul[1]/p/span[4]/text()').extract_first()
+        item['house_size'] = response.xpath('//div[@id="aside"]/ul[1]/p/span[3]/text()').extract_first()
+        item['house_type'] = response.xpath('//div[@id="aside"]/ul[1]/p/span[2]/text()').extract_first()
+        item['house_time'] = response.xpath('//div[@class="content__article__info"]/ul/li[2]/text()').re_first('发布：(.*)')
+        item['house_price'] = response.xpath('//div[@id="aside"]/p[1]/span/text()').extract_first() + '元/月'
+        images = response.xpath('//ul[@id="prefix"]/li')
+        item['house_images'] = []
+        for image in images:
+            item['house_images'].append(image.xpath('img/@src').extract_first())
+        item['house_url'] = response.url
 
-
-
-
-
-
-
+        yield item
 
