@@ -51,9 +51,12 @@ class LianjiaSpider(scrapy.Spider):
 
             yield item
 
-        # for i in range(2, 5):
-        #     url = 'https://bj.lianjia.com/zufang/pg{}'.format(str(i))
-        #     yield Request(url, callback=self.house_parse)
+        total_page = response.xpath('//div[@class="content__pg"]/@data-totalpage').extract_first()
+
+        for i in range(2, total_page + 1):
+            url = response.url + 'pg{}'.format(str(i))
+            yield Request(url=url, callback=self.house_parse())
+
 
 
 
