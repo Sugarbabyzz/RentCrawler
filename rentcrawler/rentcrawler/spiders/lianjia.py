@@ -28,6 +28,14 @@ class LianjiaSpider(scrapy.Spider):
 
         for li in html:
             url = parse.urljoin(response.url, li.xpath('a/@href').extract_first())
+            yield Request(url=url, callback=self.page_parse)
+
+    def page_parse(self, response):
+
+        total_page = response.xpath('//div[@class="content__pg"]/@data-totalpage').extract_first()
+
+        for i in range(1, int(total_page) + 1):
+            url = str(response.url) + 'pg{}'.format(str(i))
             yield Request(url=url, callback=self.house_parse)
 
     def house_parse(self, response):
@@ -50,12 +58,6 @@ class LianjiaSpider(scrapy.Spider):
             item['house_url'] = parse.urljoin(response.url, i.xpath('div//p[contains(@class, "title")]/a/@href').extract_first())
 
             yield item
-
-        total_page = response.xpath('//div[@class="content__pg"]/@data-totalpage').extract_first()
-
-        for i in range(2, total_page + 1):
-            url = response.url + 'pg{}'.format(str(i))
-            yield Request(url=url, callback=self.house_parse())
 
 
 

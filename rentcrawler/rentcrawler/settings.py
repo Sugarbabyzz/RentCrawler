@@ -66,7 +66,7 @@ DOWNLOADER_MIDDLEWARES = {
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    'rentcrawler.pipelines.CsvPipeline': 200,
-   'rentcrawler.pipelines.DuplicatesPipeline': 100,
+   # 'rentcrawler.pipelines.DuplicatesPipeline': 100,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
