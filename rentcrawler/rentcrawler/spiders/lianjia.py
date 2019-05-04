@@ -46,6 +46,7 @@ class LianjiaSpider(scrapy.Spider):
 
     def house_parse(self, response):
         item = LianjiaItem()
+        item['house_city'] = response.xpath('//p[@class="bread__nav__wrapper oneline"]/a/text()').re_first('链家网(.*)站')
 
         html = response.xpath('//div[@class="content__list"]/div')
 
