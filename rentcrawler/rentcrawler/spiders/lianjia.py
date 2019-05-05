@@ -14,7 +14,7 @@ class LianjiaSpider(scrapy.Spider):
                   'https://sz.lianjia.com/zufang/',
                   'https://cd.lianjia.com/zufang/'
                   ]
-    # 北京19856 + 上海24265 + 广州44235 + 深圳28373 + 成都83762 = 200491
+    # 北京19856 + 上海24265 + 广州44235 + 深圳28373 + 成都83762 = 200491   实际 183749
 
     def start_requests(self):
         for url in self.start_urls:
