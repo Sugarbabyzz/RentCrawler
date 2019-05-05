@@ -50,7 +50,6 @@ class LianjiaSpider(scrapy.Spider):
         total_page = response.xpath('//div[@class="content__pg"]/@data-totalpage').extract_first()
 
         for i in range(1, int(total_page) + 1):
-        # for i in range(1, 3):
             url = str(response.url) + 'pg{}'.format(str(i))
             yield Request(url=url, callback=self.house_parse)
 
