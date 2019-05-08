@@ -71,17 +71,19 @@ class LianjiaSpider(scrapy.Spider):
         item = LianjiaItem()
 
         item['house_city'] = response.xpath('//p[@class="bread__nav__wrapper oneline"]/a/text()').re_first('(.*)租房网')
-        item['house_title'] = (response.xpath('//p[contains(@class, "title")]/text()').extract_first()).replace(' ', '').replace('\n', '').replace('，', ' ').replace('。', '')
+        item['house_title'] = (response.xpath('//p[contains(@class, "title")]/text()').extract_first()).replace(' ',
+                                                                                                                '').replace(
+            '\n', '').replace('，', ' ').replace('。', '')
+        item['house_lnglat'] = []
+        item['house_lnglat'].append(response.xpath('/html/body/div[3]/script/text()').re_first('longitude: \'(.*)\''))
+        item['house_lnglat'].append(response.xpath('/html/body/div[3]/script/text()').re_first('latitude: \'(.*)\''))
         item['house_location'] = response.xpath('/html/body/div[3]/script/text()').re_first('g_conf.name = \'(.*)\'')
         item['house_orient'] = response.xpath('//div[@id="aside"]/ul[1]/p/span[4]/text()').extract_first()
         item['house_size'] = response.xpath('//div[@id="aside"]/ul[1]/p/span[3]/text()').extract_first()
         item['house_type'] = response.xpath('//div[@id="aside"]/ul[1]/p/span[2]/text()').extract_first()
         item['house_time'] = response.xpath('//div[@class="content__article__info"]/ul/li[2]/text()').re_first('发布：(.*)')
-        item['house_price'] = response.xpath('//div[@id="aside"]/p[1]/span/text()').extract_first() + '元/月'
-        images = response.xpath('//ul[@id="prefix"]/li')
-        item['house_images'] = []
-        for image in images:
-            item['house_images'].append(image.xpath('img/@src').extract_first())
+        item['house_price'] = response.xpath('//div[@id="aside"]/p[1]/span/text()').extract_first()
+        item['house_image'] = response.xpath('//ul[@id="prefix"]/li[1]/img/@src').extract_first()
         item['house_url'] = response.url
 
         yield item
