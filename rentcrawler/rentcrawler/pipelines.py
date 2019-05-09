@@ -19,15 +19,18 @@ class CsvPipeline(object):
         # self.pointsCd_detail = []
 
         # 第二批：天津、南京、杭州、青岛、西安、厦门、合肥、重庆、武汉
-        self.pointsTj = []
-        self.pointsNj = []
-        self.pointsHz = []
-        self.pointsQd = []
-        self.pointsXa = []
-        self.pointsXm = []
-        self.pointsHf = []
-        self.pointsCq = []
-        self.pointsWh = []
+        # self.pointsTj = []
+        # self.pointsNj = []
+        # self.pointsHz = []
+        # self.pointsQd = []
+        # self.pointsXa = []
+        # self.pointsXm = []
+        # self.pointsHf = []
+        # self.pointsCq = []
+        # self.pointsWh = []
+
+        # 第三批：长沙
+        self.pointsCs = []
 
     def process_item(self, item, spider):
 
@@ -70,24 +73,28 @@ class CsvPipeline(object):
         #     self.pointsCd_detail.append(dic_detail)
 
         # 第二批：天津、南京、杭州、青岛、西安、厦门、合肥、重庆、武汉
-        if item['house_city'] == '天津':
-            self.pointsTj.append(dic)
-        elif item['house_city'] == '南京':
-            self.pointsNj.append(dic)
-        elif item['house_city'] == '杭州':
-            self.pointsHz.append(dic)
-        elif item['house_city'] == '青岛':
-            self.pointsQd.append(dic)
-        elif item['house_city'] == '西安':
-            self.pointsXa.append(dic)
-        elif item['house_city'] == '厦门':
-            self.pointsXm.append(dic)
-        elif item['house_city'] == '合肥':
-            self.pointsHf.append(dic)
-        elif item['house_city'] == '重庆':
-            self.pointsCq.append(dic)
-        elif item['house_city'] == '武汉':
-            self.pointsWh.append(dic)
+        # if item['house_city'] == '天津':
+        #     self.pointsTj.append(dic)
+        # elif item['house_city'] == '南京':
+        #     self.pointsNj.append(dic)
+        # elif item['house_city'] == '杭州':
+        #     self.pointsHz.append(dic)
+        # elif item['house_city'] == '青岛':
+        #     self.pointsQd.append(dic)
+        # elif item['house_city'] == '西安':
+        #     self.pointsXa.append(dic)
+        # elif item['house_city'] == '厦门':
+        #     self.pointsXm.append(dic)
+        # elif item['house_city'] == '合肥':
+        #     self.pointsHf.append(dic)
+        # elif item['house_city'] == '重庆':
+        #     self.pointsCq.append(dic)
+        # elif item['house_city'] == '武汉':
+        #     self.pointsWh.append(dic)
+
+        # 第三批：长沙
+        if item['house_city'] == '长沙':
+            self.pointsCs.append(dic)
 
         return item
 
@@ -134,41 +141,46 @@ class CsvPipeline(object):
 
 
         # 第二批：天津、南京、杭州、青岛、西安、厦门、合肥、重庆、武汉
-        with open('LianjiaTj.js', 'a+', encoding='utf-8') as f:
-            f.write('var points_tj = ')
-            f.write(str(self.pointsTj))
+        # with open('LianjiaTj.js', 'a+', encoding='utf-8') as f:
+        #     f.write('var points_tj = ')
+        #     f.write(str(self.pointsTj))
+        #
+        # with open('LianjiaNj.js', 'a+', encoding='utf-8') as f:
+        #     f.write('var points_nj = ')
+        #     f.write(str(self.pointsNj))
+        #
+        # with open('LianjiaHz.js', 'a+', encoding='utf-8') as f:
+        #     f.write('var points_hz = ')
+        #     f.write(str(self.pointsHz))
+        #
+        # with open('LianjiaQd.js', 'a+', encoding='utf-8') as f:
+        #     f.write('var points_qd = ')
+        #     f.write(str(self.pointsQd))
+        #
+        # with open('LianjiaXa.js', 'a+', encoding='utf-8') as f:
+        #     f.write('var points_xa = ')
+        #     f.write(str(self.pointsXa))
+        #
+        # with open('LianjiaXm.js', 'a+', encoding='utf-8') as f:
+        #     f.write('var points_xm = ')
+        #     f.write(str(self.pointsXm))
+        #
+        # with open('LianjiaHf.js', 'a+', encoding='utf-8') as f:
+        #     f.write('var points_hf = ')
+        #     f.write(str(self.pointsHf))
+        #
+        # with open('LianjiaCq.js', 'a+', encoding='utf-8') as f:
+        #     f.write('var points_cq = ')
+        #     f.write(str(self.pointsCq))
+        #
+        # with open('LianjiaWh.js', 'a+', encoding='utf-8') as f:
+        #     f.write('var points_wh = ')
+        #     f.write(str(self.pointsWh))
 
-        with open('LianjiaNj.js', 'a+', encoding='utf-8') as f:
-            f.write('var points_nj = ')
-            f.write(str(self.pointsNj))
-
-        with open('LianjiaHz.js', 'a+', encoding='utf-8') as f:
-            f.write('var points_hz = ')
-            f.write(str(self.pointsHz))
-
-        with open('LianjiaQd.js', 'a+', encoding='utf-8') as f:
-            f.write('var points_qd = ')
-            f.write(str(self.pointsQd))
-
-        with open('LianjiaXa.js', 'a+', encoding='utf-8') as f:
-            f.write('var points_xa = ')
-            f.write(str(self.pointsXa))
-
-        with open('LianjiaXm.js', 'a+', encoding='utf-8') as f:
-            f.write('var points_xm = ')
-            f.write(str(self.pointsXm))
-
-        with open('LianjiaHf.js', 'a+', encoding='utf-8') as f:
-            f.write('var points_hf = ')
-            f.write(str(self.pointsHf))
-
-        with open('LianjiaCq.js', 'a+', encoding='utf-8') as f:
-            f.write('var points_cq = ')
-            f.write(str(self.pointsCq))
-
-        with open('LianjiaWh.js', 'a+', encoding='utf-8') as f:
-            f.write('var points_wh = ')
-            f.write(str(self.pointsWh))
+        # 第三批：长沙
+        with open('LianjiaCs.js', 'a+', encoding='utf-8') as f:
+            f.write('var points_cs = ')
+            f.write(str(self.pointsCs))
 
 
 
