@@ -1,10 +1,20 @@
 import csv
 from scrapy.exceptions import DropItem
+import pymysql
 
 
-class CsvPipeline(object):
+class CsvPipeline():
 
-    def __init__(self):
+    def __init__(self, host, database, user, password, port):
+
+        # Mysql数据库配置
+        self.host = host
+        self.database = database
+        self.user = user
+        self.password = password
+        self.port = port
+        self.db = pymysql.connect(self.host, self.user, self.password, self.database)
+        self.cursor = self.db.cursor()
 
         # 第一批：北京、上海、广州、深圳、成都
         # self.pointsBj = []
@@ -30,16 +40,77 @@ class CsvPipeline(object):
         # self.pointsWh = []
 
         # 第三批：长沙
-        self.pointsCs = []
+        # self.pointsCs = []
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(
+            host=crawler.settings.get('MYSQL_HOST'),
+            database=crawler.settings.get('MYSQL_DATABASE'),
+            user=crawler.settings.get('MYSQL_USER'),
+            password=crawler.settings.get('MYSQL_PASSWORD'),
+            port=crawler.settings.get('MYSQL_PORT')
+        )
 
     def process_item(self, item, spider):
 
-        dic = {
-            "title": item['house_title'],
-            # "location": item['house_location'],
-            "lnglat": item['house_lnglat'],
-            "url": item['house_url']
-        }
+        city = item['house_city']
+        title = item['house_title']
+        location = item['house_location']
+        lnglat = item['house_lnglat']
+        size = item['house_size']
+        orient = item['house_orient']
+        type = item['house_type']
+        time = item['house_time']
+        price = item['house_price']
+        image = item['house_image']
+        url = item['house_url']
+
+        if item['house_city'] == '北京':
+            sql = 'insert into bj (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        elif item['house_city'] == '重庆':
+            sql = 'insert into cq (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        elif item['house_city'] == '成都':
+            sql = 'insert into cd (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        elif item['house_city'] == '长沙':
+            sql = 'insert into cs (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        elif item['house_city'] == '广州':
+            sql = 'insert into gz (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        elif item['house_city'] == '合肥':
+            sql = 'insert into hf (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        elif item['house_city'] == '杭州':
+            sql = 'insert into hz (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        elif item['house_city'] == '南京':
+            sql = 'insert into nj (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        elif item['house_city'] == '青岛':
+            sql = 'insert into qd (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        elif item['house_city'] == '上海':
+            sql = 'insert into sh (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        elif item['house_city'] == '深圳':
+            sql = 'insert into sz (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        elif item['house_city'] == '天津':
+            sql = 'insert into tj (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        elif item['house_city'] == '武汉':
+            sql = 'insert into wh (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        elif item['house_city'] == '西安':
+            sql = 'insert into xa (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        elif item['house_city'] == '厦门':
+            sql = 'insert into xm (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+
+        # data = dict(item)
+        # keys = ','.join(data.keys())
+        # values = ','.join(['%s'] * len(data))
+        # sql = 'insert into %s (%s) values (%s)' % ('house', keys, values)
+
+        self.cursor.execute(sql, (city, title, location, str(lnglat), size, orient, type, time, price, image, url))
+        self.db.commit()
+
+        # dic = {
+        #     "title": item['house_title'],
+        #     # "location": item['house_location'],
+        #     "lnglat": item['house_lnglat'],
+        #     "url": item['house_url']
+        # }
 
         # ⤵️这个太复杂，占空间太多，弃用
         # dic_detail = {
@@ -93,12 +164,14 @@ class CsvPipeline(object):
         #     self.pointsWh.append(dic)
 
         # 第三批：长沙
-        if item['house_city'] == '长沙':
-            self.pointsCs.append(dic)
+        # if item['house_city'] == '长沙':
+        #     self.pointsCs.append(dic)
 
         return item
 
     def close_spider(self, spider):
+
+        self.db.close()
         # 第一批：北京、上海、广州、深圳、成都
         # with open('LianjiaBj.js', 'a+', encoding='utf-8') as f:
         #     f.write('var points = ')
@@ -178,12 +251,7 @@ class CsvPipeline(object):
         #     f.write(str(self.pointsWh))
 
         # 第三批：长沙
-        with open('LianjiaCs.js', 'a+', encoding='utf-8') as f:
-            f.write('var points_cs = ')
-            f.write(str(self.pointsCs))
-
-
-
-
-
+        # with open('LianjiaCs.js', 'a+', encoding='utf-8') as f:
+        #     f.write('var points_cs = ')
+        #     f.write(str(self.pointsCs))
 

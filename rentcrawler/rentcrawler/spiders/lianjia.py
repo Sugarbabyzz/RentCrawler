@@ -9,6 +9,20 @@ class LianjiaSpider(scrapy.Spider):
 
     name = 'lianjia'
     start_urls = ['https://cs.lianjia.com/zufang/',
+                  'https://tj.lianjia.com/zufang/',
+                  'https://nj.lianjia.com/zufang/',
+                  'https://hz.lianjia.com/zufang/',
+                  'https://qd.lianjia.com/zufang/',
+                  'https://xa.lianjia.com/zufang/',
+                  'https://xm.lianjia.com/zufang/',
+                  'https://hf.lianjia.com/zufang/',
+                  'https://cq.lianjia.com/zufang/',
+                  'https://wh.lianjia.com/zufang/',
+                  'https://bj.lianjia.com/zufang/',
+                  'https://sh.lianjia.com/zufang/',
+                  'https://gz.lianjia.com/zufang/',
+                  'https://sz.lianjia.com/zufang/',
+                  'https://cd.lianjia.com/zufang/'
                  ]
     # 第一批
     # 北京19856 + 上海24265 + 广州44235 + 深圳28373 + 成都83762 = 200491   实际 183749
@@ -94,13 +108,13 @@ class LianjiaSpider(scrapy.Spider):
         item['house_lnglat'] = []
         item['house_lnglat'].append(response.xpath('/html/body/div[3]/script/text()').re_first('longitude: \'(.*)\''))
         item['house_lnglat'].append(response.xpath('/html/body/div[3]/script/text()').re_first('latitude: \'(.*)\''))
-        # item['house_location'] = response.xpath('/html/body/div[3]/script/text()').re_first('g_conf.name = \'(.*)\'')
-        # item['house_orient'] = response.xpath('//div[@id="aside"]/ul[1]/p/span[4]/text()').extract_first()
-        # item['house_size'] = response.xpath('//div[@id="aside"]/ul[1]/p/span[3]/text()').extract_first()
-        # item['house_type'] = response.xpath('//div[@id="aside"]/ul[1]/p/span[2]/text()').extract_first()
-        # item['house_time'] = response.xpath('//div[@class="content__article__info"]/ul/li[2]/text()').re_first('发布：(.*)')
-        # item['house_price'] = response.xpath('//div[@id="aside"]/p[1]/span/text()').extract_first()
-        # item['house_image'] = response.xpath('//ul[@id="prefix"]/li[1]/img/@src').extract_first()
+        item['house_location'] = response.xpath('/html/body/div[3]/script/text()').re_first('g_conf.name = \'(.*)\'')
+        item['house_orient'] = response.xpath('//div[@id="aside"]/ul[1]/p/span[4]/text()').extract_first()
+        item['house_size'] = response.xpath('//div[@id="aside"]/ul[1]/p/span[3]/text()').extract_first()
+        item['house_type'] = response.xpath('//div[@id="aside"]/ul[1]/p/span[2]/text()').extract_first()
+        item['house_time'] = response.xpath('//div[@class="content__article__info"]/ul/li[2]/text()').re_first('发布：(.*)')
+        item['house_price'] = response.xpath('//div[@id="aside"]/p[1]/span/text()').extract_first()
+        item['house_image'] = response.xpath('//ul[@id="prefix"]/li[1]/img/@src').extract_first()
         item['house_url'] = response.url
 
         yield item
