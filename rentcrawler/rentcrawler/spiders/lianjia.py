@@ -9,40 +9,26 @@ class LianjiaSpider(scrapy.Spider):
 
     name = 'lianjia'
     start_urls = ['https://cs.lianjia.com/zufang/',
-                  'https://tj.lianjia.com/zufang/',
-                  'https://nj.lianjia.com/zufang/',
-                  'https://hz.lianjia.com/zufang/',
-                  'https://qd.lianjia.com/zufang/',
-                  'https://xa.lianjia.com/zufang/',
-                  'https://xm.lianjia.com/zufang/',
-                  'https://hf.lianjia.com/zufang/',
-                  'https://cq.lianjia.com/zufang/',
-                  'https://wh.lianjia.com/zufang/',
-                  'https://bj.lianjia.com/zufang/',
-                  'https://sh.lianjia.com/zufang/',
-                  'https://gz.lianjia.com/zufang/',
-                  'https://sz.lianjia.com/zufang/',
-                  'https://cd.lianjia.com/zufang/'
+                  # 'https://tj.lianjia.com/zufang/',
+                  # 'https://nj.lianjia.com/zufang/',
+                  # 'https://hz.lianjia.com/zufang/',
+                  # 'https://qd.lianjia.com/zufang/',
+                  # 'https://xa.lianjia.com/zufang/',
+                  # 'https://xm.lianjia.com/zufang/',
+                  # 'https://hf.lianjia.com/zufang/',
+                  # 'https://cq.lianjia.com/zufang/',
+                  # 'https://wh.lianjia.com/zufang/',
+                  # 'https://bj.lianjia.com/zufang/',
+                  # 'https://sh.lianjia.com/zufang/',
+                  # 'https://gz.lianjia.com/zufang/',
+                  # 'https://sz.lianjia.com/zufang/',
+                  # 'https://cd.lianjia.com/zufang/'
                  ]
     # 第一批
     # 北京19856 + 上海24265 + 广州44235 + 深圳28373 + 成都83762 = 200491   实际 183749
-    # 'https://bj.lianjia.com/zufang/',
-    # 'https://sh.lianjia.com/zufang/',
-    # 'https://gz.lianjia.com/zufang/',
-    # 'https://sz.lianjia.com/zufang/',
-    # 'https://cd.lianjia.com/zufang/'
 
     # 第二批
     # 天津21084 + 南京61906 + 杭州57769 + 青岛33840 + 西安33564 + 厦门10591 + 合肥20304 + 重庆31656 + 武汉86444 = 357158   实际
-    # 'https://tj.lianjia.com/zufang/',
-    # 'https://nj.lianjia.com/zufang/',
-    # 'https://hz.lianjia.com/zufang/',
-    # 'https://qd.lianjia.com/zufang/',
-    # 'https://xa.lianjia.com/zufang/',
-    # 'https://xm.lianjia.com/zufang/',
-    # 'https://hf.lianjia.com/zufang/',
-    # 'https://cq.lianjia.com/zufang/',
-    # 'https://wh.lianjia.com/zufang/',
 
     # 第三批
     # 长沙21675
@@ -118,4 +104,7 @@ class LianjiaSpider(scrapy.Spider):
         item['house_url'] = response.url
 
         yield item
+
+
+
 
