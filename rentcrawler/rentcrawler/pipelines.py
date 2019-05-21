@@ -1,9 +1,45 @@
 import csv
+import datetime
+
 from scrapy.exceptions import DropItem
 import pymysql
+import re, time
+from rentcrawler.items import LianjiaItem
+
+'''
+    数据清洗
+'''
+class TimePipeline():
+    def parse_time(self, date):
+        if re.match('今天', date):
+            date = time.strftime('%Y-%m-%d', datetime.datetime.now())
+        if re.match('\d+天前', date):
+            n = re.match('(\d+)', date).group(1)
+            delta = datetime.timedelta(days=n)
+            date = time.strftime('%Y-%m-%d', (date - delta).strftime('%Y-%m-%d'))
+        if re.match('\d+个月前', date):
+            n = re.match('(\d+)', date).group(1)
+            delta = datetime.timedelta(days=n) * 30
+            date = time.strftime('%Y-%m-%d', (date - delta).strftime('%Y-%m-%d'))
+        if re.match('\d+年前', date):
+            n = re.match('(\d+)', date).group(1)
+            delta = datetime.timedelta(days=n) * 365
+            date = time.strftime('%Y-%m-%d', (date - delta).strftime('%Y-%m-%d'))
+        return date
+
+    def process_item(self, item, spider):
+        if isinstance(item, LianjiaItem):
+            if item.get('house_time'):
+                item['house_time'] = item['house_time'].strip()
+                item['house_time'] = self.parse_time(item.get('house_time'))
+
+        return item
 
 
-class CsvPipeline():
+"""
+    存储到MySQL
+"""
+class MySQLPipeline():
 
     def __init__(self, host, database, user, password, port):
 
