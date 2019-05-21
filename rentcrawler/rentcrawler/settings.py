@@ -68,6 +68,7 @@ DOWNLOADER_MIDDLEWARES = {
 ITEM_PIPELINES = {
    # 'rentcrawler.pipelines.MySQLPipeline': 200,
    'rentcrawler.pipelines.TimePipeline': 300,
+   # 'rentcrawler.pipelines.DuplicatesPipeline': 400,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -101,3 +102,6 @@ MYSQL_PASSWORD = '123456'
 
 # 代理池URL
 PROXY_URL = 'http://localhost:5555/random'
+
+# 去重
+DUPEFILTER_CLASS = 'rentcrawler.dupe.DupeFilter'
