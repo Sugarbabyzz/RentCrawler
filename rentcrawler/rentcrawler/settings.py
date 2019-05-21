@@ -54,6 +54,7 @@ ROBOTSTXT_OBEY = False
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
    'rentcrawler.middlewares.RandomUserAgentMiddleware': 543,
+   'rentcrawler.middlewares.ProxyMiddleware': 400
 }
 
 # Enable or disable extensions
@@ -65,7 +66,8 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'rentcrawler.pipelines.CsvPipeline': 200,
+   # 'rentcrawler.pipelines.MySQLPipeline': 200,
+   'rentcrawler.pipelines.TimePipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -96,3 +98,6 @@ MYSQL_DATABASE = 'rent'
 MYSQL_PORT = 3306
 MYSQL_USER = 'root'
 MYSQL_PASSWORD = '123456'
+
+# 代理池URL
+PROXY_URL = 'http://localhost:5555/random'
