@@ -1,4 +1,4 @@
-from scrapy.dupefilters import BaseDupeFilter
+from scrapy.dupefilters import RFPDupeFilter
 from scrapy.utils.request import request_fingerprint
 
 """
@@ -11,7 +11,7 @@ from scrapy.utils.request import request_fingerprint
 """
 
 
-class MyDupeFilter(BaseDupeFilter):
+class DupeFilter(RFPDupeFilter):
 
     def __init__(self):
         self.record = set()
@@ -21,6 +21,7 @@ class MyDupeFilter(BaseDupeFilter):
         return cls()
 
     #:return: True表示已经访问过；False表示未访问过
+
     def request_seen(self, request):
         ident = request_fingerprint(request)
         if ident in self.record:
