@@ -14,14 +14,14 @@ class HouseSpider(scrapy.Spider):
                    # 'https://hz.lianjia.com/zufang/',
                    # 'https://qd.lianjia.com/zufang/',
                    # 'https://xa.lianjia.com/zufang/',
-                   'https://xm.lianjia.com/zufang/',
+                   # 'https://xm.lianjia.com/zufang/',
                    # 'https://hf.lianjia.com/zufang/',
                    # 'https://cq.lianjia.com/zufang/',
                    # 'https://wh.lianjia.com/zufang/',
-                   # 'https://bj.lianjia.com/zufang/',
+                   'https://bj.lianjia.com/zufang/',
                    # 'https://sh.lianjia.com/zufang/',
                    # 'https://gz.lianjia.com/zufang/',
-                   'https://sz.lianjia.com/zufang/',
+                   # 'https://sz.lianjia.com/zufang/',
                    # 'https://cd.lianjia.com/zufang/'
                  ]
     # 第一批
@@ -119,6 +119,7 @@ class HouseSpider(scrapy.Spider):
         item['house_image'] = response.xpath('//ul[@id="prefix"]/li[1]/img/@src').extract_first()
         item['house_url'] = response.url
         item['house_refer'] = '链家'
+        item['house_area'] = response.xpath('//p[@class="bread__nav__wrapper oneline"]/a[2]/text()').re_first('(.*)租房')
 
         yield item
 

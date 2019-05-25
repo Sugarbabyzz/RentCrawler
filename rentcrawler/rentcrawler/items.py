@@ -14,7 +14,8 @@ class HouseItem(Item):
     house_price = Field()           # 价钱
     house_image = Field()           # 照片
     house_url = Field()             # 链接
-    house_refer = Field()             # 来源
+    house_refer = Field()           # 来源
+    house_area = Field()            # 城区
 
 
 
