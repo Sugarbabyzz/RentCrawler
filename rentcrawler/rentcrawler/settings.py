@@ -66,9 +66,8 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   # 'rentcrawler.pipelines.MySQLPipeline': 200,
-   'rentcrawler.pipelines.TimePipeline': 300,
-   # 'rentcrawler.pipelines.DuplicatesPipeline': 400,
+   'rentcrawler.pipelines.MySQLPipeline': 200,
+   # 'rentcrawler.pipelines.TimePipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -95,7 +94,7 @@ ITEM_PIPELINES = {
 
 # Mysql
 MYSQL_HOST = 'localhost'
-MYSQL_DATABASE = 'rent'
+MYSQL_DATABASE = 'rentdb'
 MYSQL_PORT = 3306
 MYSQL_USER = 'root'
 MYSQL_PASSWORD = '123456'
@@ -104,4 +103,4 @@ MYSQL_PASSWORD = '123456'
 PROXY_URL = 'http://localhost:5555/random'
 
 # 去重
-DUPEFILTER_CLASS = 'rentcrawler.dupe.DupeFilter'
+DUPEFILTER_CLASS = 'rentcrawler.dupe.MyDupeFilter'
