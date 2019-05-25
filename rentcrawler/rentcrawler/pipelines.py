@@ -4,13 +4,18 @@ import datetime
 from scrapy.exceptions import DropItem
 import pymysql
 import re, time
-from rentcrawler.items import LianjiaItem
+from rentcrawler.items import HouseItem
+import requests
 
 '''
     数据清洗
 '''
 class TimePipeline():
+
+    #   时间格式规范化
     def parse_time(self, date):
+
+        #   链家发布时间格式处理
         if re.match('今天', date):
             date = time.strftime('%Y-%m-%d', datetime.datetime.now())
         if re.match('\d+天前', date):
@@ -25,28 +30,36 @@ class TimePipeline():
             n = re.match('(\d+)', date).group(1)
             delta = datetime.timedelta(days=n) * 365
             date = time.strftime('%Y-%m-%d', (date - delta).strftime('%Y-%m-%d'))
+
+        #   安居客发布时间格式处理
+        if re.match('\d+年\d+月\d+日', date):
+            y = re.match('(\d+)年', date).group(1)
+            m = re.match('(\d+)月', date).group(1)
+            d = re.match('(\d+)日', date).group(1)
+            date = y + '-' + m + '-' +d
         return date
 
+    #   经纬度格式规范化
+    def geocode(self, address):
+        parameters = {'address': address, 'key': 'cb649a25c1f81c1451adbeca73623251'}
+        base = 'http://restapi.amap.com/v3/geocode/geo'
+        response = requests.get(base, parameters)
+        answer = response.json()
+        lnglat = answer['geocodes'][0]['location']
+        print(address + "的经纬度：", lnglat)
+        return lnglat
+
     def process_item(self, item, spider):
-        if isinstance(item, LianjiaItem):
+        if isinstance(item, HouseItem):
             if item.get('house_time'):
                 item['house_time'] = item['house_time'].strip()
                 item['house_time'] = self.parse_time(item.get('house_time'))
+            if item.get('house_location'):
+                item['house_location'] = item['house_location'].strip()
+                item['house_lnglat'] = self.geocode(item['house_location'])
+
 
         return item
-
-'''
-    去重
-'''
-class DuplicatesPipeline(object):
-    def __init__(self):
-        self.ids_seen = set()
-    def process_item(self, item, spider):
-        if item['url'] in self.ids_seen:
-            raise DropItem("Duplicate item found: %s" % item)
-        else:
-            self.ids_seen.add(item['title'])
-            return item
 
 
 """
@@ -114,44 +127,45 @@ class MySQLPipeline():
         price = item['house_price']
         image = item['house_image']
         url = item['house_url']
+        refer = item['house_refer']
 
         if item['house_city'] == '北京':
-            sql = 'insert into bj (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            sql = 'insert into bj (city, title, location, lnglat, size, orient, type, time, price, image, url, refer) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         elif item['house_city'] == '重庆':
-            sql = 'insert into cq (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            sql = 'insert into cq (city, title, location, lnglat, size, orient, type, time, price, image, url, refer) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         elif item['house_city'] == '成都':
-            sql = 'insert into cd (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            sql = 'insert into cd (city, title, location, lnglat, size, orient, type, time, price, image, url, refer) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         elif item['house_city'] == '长沙':
-            sql = 'insert into cs (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            sql = 'insert into cs (city, title, location, lnglat, size, orient, type, time, price, image, url, refer) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         elif item['house_city'] == '广州':
-            sql = 'insert into gz (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            sql = 'insert into gz (city, title, location, lnglat, size, orient, type, time, price, image, url, refer) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         elif item['house_city'] == '合肥':
-            sql = 'insert into hf (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            sql = 'insert into hf (city, title, location, lnglat, size, orient, type, time, price, image, url, refer) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         elif item['house_city'] == '杭州':
-            sql = 'insert into hz (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            sql = 'insert into hz (city, title, location, lnglat, size, orient, type, time, price, image, url, refer) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         elif item['house_city'] == '南京':
-            sql = 'insert into nj (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            sql = 'insert into nj (city, title, location, lnglat, size, orient, type, time, price, image, url, refer) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         elif item['house_city'] == '青岛':
-            sql = 'insert into qd (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            sql = 'insert into qd (city, title, location, lnglat, size, orient, type, time, price, image, url, refer) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         elif item['house_city'] == '上海':
-            sql = 'insert into sh (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            sql = 'insert into sh (city, title, location, lnglat, size, orient, type, time, price, image, url, refer) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         elif item['house_city'] == '深圳':
-            sql = 'insert into sz (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            sql = 'insert into sz (city, title, location, lnglat, size, orient, type, time, price, image, url, refer) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         elif item['house_city'] == '天津':
-            sql = 'insert into tj (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            sql = 'insert into tj (city, title, location, lnglat, size, orient, type, time, price, image, url, refer) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         elif item['house_city'] == '武汉':
-            sql = 'insert into wh (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            sql = 'insert into wh (city, title, location, lnglat, size, orient, type, time, price, image, url, refer) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         elif item['house_city'] == '西安':
-            sql = 'insert into xa (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            sql = 'insert into xa (city, title, location, lnglat, size, orient, type, time, price, image, url, refer) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         elif item['house_city'] == '厦门':
-            sql = 'insert into xm (city, title, location, lnglat, size, orient, type, time, price, image, url) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            sql = 'insert into xm (city, title, location, lnglat, size, orient, type, time, price, image, url, refer) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
 
         # data = dict(item)
         # keys = ','.join(data.keys())
         # values = ','.join(['%s'] * len(data))
         # sql = 'insert into %s (%s) values (%s)' % ('house', keys, values)
 
-        self.cursor.execute(sql, (city, title, location, str(lnglat), size, orient, type, time, price, image, url))
+        self.cursor.execute(sql, (city, title, location, str(lnglat), size, orient, type, time, price, image, url, refer))
         self.db.commit()
 
         # dic = {
