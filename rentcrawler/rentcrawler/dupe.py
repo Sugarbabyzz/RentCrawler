@@ -1,4 +1,4 @@
-from scrapy.dupefilters import RFPDupeFilter
+from scrapy.dupefilters import BaseDupeFilter
 from scrapy.utils.request import request_fingerprint
 
 """
@@ -11,7 +11,7 @@ from scrapy.utils.request import request_fingerprint
 """
 
 
-class DupeFilter(RFPDupeFilter):
+class MyDupeFilter(BaseDupeFilter):
 
     def __init__(self):
         self.record = set()
