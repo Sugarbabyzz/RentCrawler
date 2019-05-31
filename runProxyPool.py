@@ -29,6 +29,6 @@ def geocode(address):
 
 
 if __name__ == '__main__':
-    # main()
-    address = '北京科技大学'
-    geocode(address)
+    main()
+    # address = '北京科技大学'
+    # geocode(address)
