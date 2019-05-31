@@ -16,23 +16,40 @@ cursor = db.cursor()
 x = [] #存放所有的x，就是房屋面积
 y = [] #存放所有的y，就是租房价格
 
+# 西城 152.24 -1025.94
+# 东城 130.90 471.94
+# 丰台 78.41 481.42
+# 房山 45.56 213.20
+# 昌平 59.71 516.64
+# 朝阳 128.54 -779.85
+# 海淀 112.52 431.72
+# 石景山 79.13 558.67
+# 通州 58.96 -41.02
+# sql = 'SELECT * FROM bj WHERE area = "通州" and size < 400'
+# try:
+#     cursor.execute(sql)
+#     print('Count:', cursor.rowcount)
+#     row = cursor.fetchone()
+#     while row:
+#         print('Row:', row)
+#
+#         x.append(int(row[3]))
+#         y.append(int(row[6]))
+#         # y.append(int(row[6])/int(row[3]))
+#
+#         row = cursor.fetchone()
+# except:
+#     print('Error')
 
-sql = 'SELECT * FROM bj WHERE area = "西城" and size < 400'
-try:
-    cursor.execute(sql)
-    print('Count:', cursor.rowcount)
-    row = cursor.fetchone()
-    while row:
-        print('Row:', row)
-
-        x.append(int(row[3]))
-        # y.append(int(row[6]))
-        y.append(int(row[6])/int(row[3]))
-
-        row = cursor.fetchone()
-except:
-    print('Error')
-
+# 西城 4786.52 1227.04
+# 东城 4862.12 2297.26
+# 丰台 2933.32 902.41
+# 房山 1221.07 1088.26
+# 昌平 2539.52 513.83
+# 朝阳 5423.17 781.52
+# 海淀 4565.65 830.95
+# 石景山 2499.64 1447.86
+# 通州 2074.59 639.69
 
 # 卧室数量
 # sql = 'SELECT * FROM bj WHERE area = "通州" and size < 400'
@@ -54,22 +71,32 @@ except:
 # except:
 #     print('Error')
 
+# 西城 356.04 8786.51
+# 东城 -121.28 12201.65
+# 丰台 2.51 6948.10
+# 房山 -2.51 3813.19
+# 昌平 119.60 6061.00
+# 朝阳 70.38 11974.52
+# 海淀 293.38 9205.27
+# 石景山 -124.01 7200.13
+# 通州 132.58 4572.06
+
 # 月份
-# sql = 'SELECT * FROM bj WHERE area = "西城" and size < 400'
-# try:
-#     cursor.execute(sql)
-#     print('Count:', cursor.rowcount)
-#     row = cursor.fetchone()
-#     while row:
-#         print('Row:', row)
-#
-#         m = re.match('(.*)-(.*)-(.*)', row[9])
-#
-#         x.append(int(m.group(2)))
-#         y.append(int(row[6]))   # 租金
-#         row = cursor.fetchone()
-# except:
-#     print('Error')
+sql = 'SELECT * FROM bj WHERE area = "通州" and size < 400'
+try:
+    cursor.execute(sql)
+    print('Count:', cursor.rowcount)
+    row = cursor.fetchone()
+    while row:
+        print('Row:', row)
+
+        m = re.match('(.*)-(.*)-(.*)', row[9])
+
+        x.append(int(m.group(2)))
+        y.append(int(row[6]))   # 租金
+        row = cursor.fetchone()
+except:
+    print('Error')
 
 
 
@@ -77,8 +104,8 @@ except:
 linearReg = LinearRegression()
 X = np.array([x])
 y = np.array([y])
-X = X[y <= 500] #只考虑租房价格100000元以内的房子
-y = y[y <= 500] #只考虑租房价格100000元以内的房子
+X = X[y <= 50000] #只考虑租房价格100000元以内的房子
+y = y[y <= 50000] #只考虑租房价格100000元以内的房子
 X = X.reshape(-1,1) #转成二维数组，固定1列（一个特征），行为自动
 plt.scatter(X,y,color="b")  #根据矩阵X和向量y，把训练及的点画在图形上
 linearReg.fit(X,y)  #根据矩阵X和向量y，进行训练
@@ -100,3 +127,5 @@ print('k=', k, ',b=', b)
 plt.legend()
 # plt.savefig('./发布时间/时间.jpg')
 plt.show() #显示图形
+
+
