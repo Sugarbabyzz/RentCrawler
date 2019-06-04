@@ -8,9 +8,9 @@ from rentcrawler.items import HouseItem
 import requests
 
 '''
-    数据清洗
+    数据预处理
 '''
-class TimePipeline():
+class ParsePipeline():
 
     #   时间格式规范化
     def parse_time(self, date):
@@ -19,16 +19,19 @@ class TimePipeline():
         if re.match('今天', date):
             date = time.strftime('%Y-%m-%d', datetime.datetime.now())
         if re.match('\d+天前', date):
+            date = time.strftime('%Y-%m-%d', datetime.datetime.now())
             n = re.match('(\d+)', date).group(1)
             delta = datetime.timedelta(days=n)
             date = time.strftime('%Y-%m-%d', (date - delta).strftime('%Y-%m-%d'))
         if re.match('\d+个月前', date):
+            date = time.strftime('%Y-%m-%d', datetime.datetime.now())
             n = re.match('(\d+)', date).group(1)
-            delta = datetime.timedelta(days=n) * 30
+            delta = datetime.timedelta(months=n) * 30
             date = time.strftime('%Y-%m-%d', (date - delta).strftime('%Y-%m-%d'))
         if re.match('\d+年前', date):
+            date = time.strftime('%Y-%m-%d', datetime.datetime.now())
             n = re.match('(\d+)', date).group(1)
-            delta = datetime.timedelta(days=n) * 365
+            delta = datetime.timedelta(years=n) * 365
             date = time.strftime('%Y-%m-%d', (date - delta).strftime('%Y-%m-%d'))
 
         #   安居客发布时间格式处理
@@ -57,9 +60,12 @@ class TimePipeline():
             if item.get('house_location'):
                 item['house_location'] = item['house_location'].strip()
                 item['house_lnglat'] = self.geocode(item['house_location'])
+            if re.match('未知', item.get['house_type']):
+                raise DropItem("Missing type in %s" % item)
 
 
         return item
+
 
 
 """
