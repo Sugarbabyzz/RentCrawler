@@ -66,8 +66,8 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'rentcrawler.pipelines.MySQLPipeline': 200,
-   # 'rentcrawler.pipelines.TimePipeline': 300,
+   # 'rentcrawler.pipelines.MySQLPipeline': 200,
+   # 'rentcrawler.pipelines.ParsePipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
