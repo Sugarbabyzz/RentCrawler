@@ -33,10 +33,10 @@ print(dict)
 sql = 'SELECT * FROM bj'
 try:
     cursor.execute(sql)
-    print('Count:', cursor.rowcount)
+    # print('Count:', cursor.rowcount)
     row = cursor.fetchone()
     while row:
-        print('Row:', row)
+        # print('Row:', row)
         # 去除不提供图片的房源
         if '1efeae8459c48eeb3fef0bc54884fd1d' in row[7]:
             # imageDeleteSQL = 'DELETE FROM bj WHERE title = %s' % row[1]
